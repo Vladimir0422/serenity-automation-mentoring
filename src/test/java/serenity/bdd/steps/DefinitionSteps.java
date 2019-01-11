@@ -17,14 +17,19 @@ public class DefinitionSteps {
         endUser.is_the_home_page();
     }
 
-    @When("the user looks up the definition of the word '$word'")
+    @When("the user looks up the definition of the word $word")
     public void whenTheUserLooksUpTheDefinitionOf(String word) {
         endUser.looks_for(word);
     }
 
-    @Then("they should see the definition '$definition'")
+    @Then("they should see the definition $definition")
     public void thenTheyShouldSeeADefinitionContainingTheWords(String definition) {
         endUser.should_see_definition(definition);
+    }
+
+    @Then("the should click on the link $link")
+    public void thenTheyShouldClickOnTheLink(String link) {
+        endUser.clickOnLink(link);
     }
 
 }
