@@ -37,4 +37,9 @@ public class EndUserSteps {
         enters(term);
         starts_search();
     }
+
+    @Step
+    public void clickOnLink(String linkName){
+        dictionaryPage.clickOnLink(linkName);
+    }
 }
