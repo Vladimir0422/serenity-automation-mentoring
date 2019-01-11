@@ -4,8 +4,11 @@ import net.thucydides.core.annotations.Steps;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
-
+import org.jbehave.core.model.ExamplesTable;
 import serenity.bdd.steps.serenity.EndUserSteps;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class DefinitionSteps {
 
@@ -22,14 +25,29 @@ public class DefinitionSteps {
         endUser.looks_for(word);
     }
 
+    @When("the user looks up the definition of the words in table $wordTable")
+    public void whenTheUserLooksUpTheDefinitionInTable(ExamplesTable wordTable) {
+        Map<String, String> resultTable = new HashMap<>();
+        for (Map<String, String> rows : wordTable.getRows()) {
+            String word = rows.get("word");
+            String definition = rows.get("definition");
+            resultTable.put(word, definition);
+        }
+    }
+
     @Then("they should see the definition $definition")
     public void thenTheyShouldSeeADefinitionContainingTheWords(String definition) {
         endUser.should_see_definition(definition);
     }
 
-    @Then("the should click on the link $link")
+    @Then("they should click on the link $link")
     public void thenTheyShouldClickOnTheLink(String link) {
         endUser.clickOnLink(link);
+    }
+
+    @Then("in the table they should see the definition")
+    public void thenTheyShouldSeeADefinitionInTable(String definition) {
+        endUser.should_see_definition(definition);
     }
 
 }

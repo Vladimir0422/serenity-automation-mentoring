@@ -8,14 +8,22 @@ Scenario: Looking up the definition of 'apple'
 Given the user is on the Wikionary home page
 When the user looks up the definition of the word <word>
 Then they should see the definition <definition>
-And the should click on the link <link>
+And they should click on the link <link>
 
 @ignore
 Scenario: Looking up the definition of 'pear'
 Given the user is on the Wikionary home page
 When the user looks up the definition of the word <word>
 Then they should see the definition <definition>
-And the should click on the link <link>
+And they should click on the link <link>
+
+Scenario: Looking up the definition of 'apple' and 'pear'
+Given the user is on the Wikionary home page
+When the user looks up the definition of the words in table
+|word  | definition                                                                                    |
+|apple | A common, round fruit produced by the tree Malus domestica, cultivated in temperate climates. |
+|pear  | An edible fruit produced by the pear tree, similar to an apple but elongated towards the stem.|
+Then in the table they should see the definition
 
 Examples:
 |word  | definition                                                                                    | link
