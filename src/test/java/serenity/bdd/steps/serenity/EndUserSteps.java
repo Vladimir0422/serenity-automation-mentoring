@@ -120,11 +120,11 @@ public class EndUserSteps {
     }
 
     @Step
-    public void verifyStatusCode() {
+    public void verifyStatusCode(PetStatus status, int code) {
         instance.getInstance()
-                .getPetByStatus(PetStatus.AVAILABLE)
+                .getPetByStatus(status)
                 .then()
-                .statusCode(200);
+                .statusCode(code);
     }
 
     ///Pet store order

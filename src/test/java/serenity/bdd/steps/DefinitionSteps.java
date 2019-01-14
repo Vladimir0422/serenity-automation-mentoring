@@ -52,17 +52,17 @@ public class DefinitionSteps {
     }
 
     @Given("system is clean")
-    public void systemIsClean(){
+    public void systemIsClean() {
         endUser.cleanup();
     }
 
-    @When("the user checks pet by status")
-    public void theUserChecksPetByStatus(){
-        endUser.getPetByStatus(PetStatus.AVAILABLE);
+    @When("the user checks pet by status $status")
+    public void theUserChecksPetByStatus(PetStatus status) {
+        endUser.getPetByStatus(status);
     }
 
-    @Then("system returns status code")
-    public void systemReturnsStatusCode(){
-        endUser.verifyStatusCode();
+    @Then("system returns status code $code")
+    public void systemReturnsStatusCode(PetStatus status, int code) {
+        endUser.verifyStatusCode(status, code);
     }
 }
