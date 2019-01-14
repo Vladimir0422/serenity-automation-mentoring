@@ -56,12 +56,12 @@ public class DefinitionSteps {
         endUser.cleanup();
     }
 
-    @When("the user checks pet by status ")
+    @When("the user checks pet by status")
     public void theUserChecksPetByStatus(){
         endUser.getPetByStatus(PetStatus.AVAILABLE);
     }
 
-    @Then("system returns status code ")
+    @Then("system returns status code")
     public void systemReturnsStatusCode(){
         endUser.verifyStatusCode();
     }
