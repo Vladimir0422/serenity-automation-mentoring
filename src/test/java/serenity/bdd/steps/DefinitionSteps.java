@@ -5,6 +5,7 @@ import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.model.ExamplesTable;
+import serenity.bdd.statuses.PetStatus;
 import serenity.bdd.steps.serenity.EndUserSteps;
 
 import java.util.HashMap;
@@ -50,4 +51,18 @@ public class DefinitionSteps {
         endUser.should_see_definition(definition);
     }
 
+    @Given("system is clean")
+    public void systemIsClean() {
+        endUser.cleanup();
+    }
+
+    @When("the user checks pet by status $status")
+    public void theUserChecksPetByStatus(PetStatus status) {
+        endUser.getPetByStatus(status);
+    }
+
+    @Then("system returns status code $code")
+    public void systemReturnsStatusCode(PetStatus status, int code) {
+        endUser.verifyStatusCode(status, code);
+    }
 }
