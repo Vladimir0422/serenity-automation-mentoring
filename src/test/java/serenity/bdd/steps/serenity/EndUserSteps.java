@@ -1,32 +1,19 @@
 package serenity.bdd.steps.serenity;
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
 import net.thucydides.core.annotations.Step;
+import serenity.bdd.endpoints.PetStorePetEndpoint;
 import serenity.bdd.models.Pet;
-import serenity.bdd.models.PetStoreOrder;
 import serenity.bdd.pages.DictionaryPage;
-import serenity.bdd.statuses.OrderStatus;
 import serenity.bdd.statuses.PetStatus;
-
-import java.time.LocalDateTime;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItem;
-import static serenity.bdd.config.Config.*;
 
 public class EndUserSteps {
 
-    private PetStoreOrder petStoreOrder;
-    private static EndUserSteps instance;
-
-    public EndUserSteps() {
-
-    }
-
+    PetStorePetEndpoint petStoreEndpoint = PetStorePetEndpoint.getInstance();
     DictionaryPage dictionaryPage;
 
     @Step
@@ -62,129 +49,53 @@ public class EndUserSteps {
 
     @Step
     public Response getPetById(String id) {
-        return given()
-                .pathParam("petId", id)
-                .when()
-                .get(PET_BY_ID)
-                .then()
-                .extract().response();
+        return petStoreEndpoint.getPetById(id);
     }
 
     @Step
     public Response getPetByStatus(PetStatus status) {
-        return given()
-                .queryParam("status", status)
-                .when()
-                .get(FIND_BY_STATUS)
-                .then()
-                .extract().response();
+        return petStoreEndpoint.getPetByStatus(status);
     }
 
     @Step
     public Response createPet(Pet pet) {
-        return given()
-                .body(pet)
-                .when()
-                .post(CREATE_PET)
-                .then()
-                .extract().response();
+        return petStoreEndpoint.createPet(pet);
     }
 
     @Step
     public Response updatePet(Pet pet) {
-        return given()
-                .body(pet)
-                .when()
-                .put(CREATE_PET)
-                .then()
-                .extract().response();
+        return petStoreEndpoint.updatePet(pet);
     }
 
     @Step
     public Response deletePetById(long id) {
-        return given()
-                .pathParam("petId", id)
-                .when()
-                .delete(PET_BY_ID)
-                .then()
-                .extract().response();
-    }
-
-    @Step
-    private RequestSpecification given() {
-        return RestAssured.given()
-                .log().uri()
-                .log().body()
-                .baseUri(PETS_STORE_BASE_URL)
-                .contentType(ContentType.JSON);
+        return petStoreEndpoint.deletePetById(id);
     }
 
     @Step
     public void verifyStatusCode(PetStatus status, int code) {
-        instance.getInstance()
-                .getPetByStatus(status)
-                .then()
-                .statusCode(code);
+        petStoreEndpoint.verifyStatusCode(status, code);
+    }
+
+    @Step
+    public void cleanup(){
+        petStoreEndpoint.cleanup();
     }
 
     ///Pet store order
 
     @Step
     public Response createPetOrder(long petId, long orderId, int quantityForOrder) {
-        return given()
-                .body(createDefaultOrder(petId, orderId, quantityForOrder))
-                .contentType(ContentType.JSON)
-                .when()
-                .post(CREATE_PET_STORE_ORDER);
+        return petStoreEndpoint.createPetOrder(petId, orderId, quantityForOrder);
     }
 
     @Step
     public Response deletePetOrder(long orderId) {
-        return given()
-                .baseUri(PETS_STORE_BASE_URL)
-                .pathParam("orderId", orderId)
-                .when()
-                .delete(FIND_PET_STORE_ORDER_BY_ORDER_ID);
+        return deletePetOrder(orderId);
     }
 
     @Step
     public Response getPetOrderByOrderId(long orderId) {
-        return given()
-                .pathParam("orderId", orderId)
-                .get(FIND_PET_STORE_ORDER_BY_ORDER_ID);
-    }
-
-    @Step
-    public static void cleanup() {
-        instance.getInstance().getPetByStatus(PetStatus.AVAILABLE)
-                .body()
-                .jsonPath()
-                .getList("findAll {item -> item.name == 'BarsikSV5'}", Pet.class)
-                .stream()
-                .forEach(pet -> instance.getInstance().deletePetById(pet.getId()));
-    }
-
-    private PetStoreOrder createDefaultOrder(long petId, long orderId, int quantityForOrder) {
-        petStoreOrder = new PetStoreOrder();
-
-        petStoreOrder.setId(orderId);
-        petStoreOrder.setPetId(petId);
-        petStoreOrder.setQuantity(quantityForOrder);
-        petStoreOrder.setShipDate(LocalDateTime.now().plusDays(1));
-        petStoreOrder.setStatus(OrderStatus.DELIVERED);
-        petStoreOrder.setComplete(true);
-
-        return petStoreOrder;
-    }
-
-    public PetStoreOrder getPetStoreObject() {
-        return petStoreOrder;
-    }
-
-    public static EndUserSteps getInstance() {
-        if (instance == null) {
-            instance = new EndUserSteps();
-        }
-        return instance;
+        return petStoreEndpoint.getPetOrderByOrderId(orderId);
     }
 }
